@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 200">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#DCC07F"/><stop offset=".55" stop-color="#BE9850"/><stop offset="1" stop-color="#9E7535"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#D8B873"/><stop offset="1" stop-color="#A8803C"/>
+    </linearGradient>
+  </defs>
+  <!-- mark -->
+  <g transform="translate(10 10) scale(.3516)">
+    <rect width="512" height="512" rx="116" fill="url(#bg)"/>
+    <path d="M150 268 L222 340" stroke="#FFFFFF" stroke-opacity=".78" stroke-width="64" stroke-linecap="round" fill="none"/>
+    <path d="M222 340 L372 172" stroke="#FFFFFF" stroke-width="64" stroke-linecap="round" fill="none"/>
+  </g>
+  <!-- DONE wordmark -->
+  <g transform="translate(225 50)" fill="none" stroke="#8C6A2F" stroke-width="17" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 10 H38 A40 40 0 0 1 38 90 H10 Z"/>
+    <circle cx="140" cy="50" r="44" fill="url(#gold)" stroke="none"/>
+    <path d="M120 51 L134 65 L161 36" stroke="#fff" stroke-width="12"/>
+    <path d="M208 90 V10 L270 90 V10"/>
+    <path d="M352 10 H302 V90 H352 M302 50 H342"/>
+  </g>
+  <!-- Arabic -->
+  <path d="M612 62v76" stroke="#A8803C" stroke-opacity=".3" stroke-width="3"/>
+  <text x="690" y="130" text-anchor="middle" font-family="IBM Plex Sans Arabic, Tajawal, Segoe UI, Tahoma, sans-serif" font-weight="700" font-size="92" fill="#A8803C">تمّ</text>
+</svg>
