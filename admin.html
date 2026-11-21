@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>لوحة المدير | تمّ DONE</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#A8803C">
+  <link rel="icon" href="assets/img/icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body class="admin">
+
+<!-- ============ LOGIN ============ -->
+<section class="login" id="login" hidden>
+  <div class="login__card">
+    <img src="assets/img/logo.svg" alt="DONE تمّ" class="login__logo">
+    <h1>لوحة المدير</h1>
+    <p class="login__sub">سجّل الدخول لاستلام الطلبات وتوزيعها على فرق التنفيذ</p>
+    <form id="loginForm" novalidate>
+      <label class="label" for="lUser">اسم المستخدم</label>
+      <div class="input-ico"><span data-icon="team"></span><input class="input" id="lUser" autocomplete="username" dir="ltr"></div>
+      <label class="label" for="lPass">كلمة المرور</label>
+      <div class="input-ico pass">
+        <span data-icon="shield"></span>
+        <input class="input" id="lPass" type="password" autocomplete="current-password" dir="ltr">
+        <button type="button" class="pass__eye" id="eye" aria-label="إظهار كلمة المرور"><span data-icon="eye"></span></button>
+      </div>
+      <p class="err" id="loginErr"></p>
+      <button class="btn btn--primary btn--lg login__btn" type="submit">دخول</button>
+    </form>
+    <a href="index.html" class="login__back">← العودة إلى الموقع</a>
+  </div>
+</section>
+
+<!-- ============ APP ============ -->
+<div class="shell" id="app" hidden>
+  <aside class="side" id="side">
+    <a href="index.html" class="side__brand" title="عرض الموقع">
+      <img src="assets/img/logo-light.svg" alt="DONE تمّ">
+    </a>
+    <nav class="side__nav">
+      <button data-view="requests" class="active"><span data-icon="list"></span>الطلبات<b class="side__count" id="newCount" hidden>0</b></button>
+      <button data-view="customers"><span data-icon="phone"></span>العملاء<b class="side__count side__count--muted" id="custCount" hidden>0</b></button>
+      <button data-view="teams"><span data-icon="team"></span>فرق التنفيذ</button>
+      <button data-view="settings"><span data-icon="shield"></span>الإعدادات</button>
+    </nav>
+    <div class="side__foot">
+      <a href="index.html" target="_blank"><span data-icon="globe"></span>عرض الموقع</a>
+      <button id="logout"><span data-icon="arrow"></span>تسجيل الخروج</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="icon-btn side-toggle" id="sideToggle" aria-label="القائمة"><span data-icon="menu"></span></button>
+      <h1 id="viewTitle">الطلبات</h1>
+      <span class="topbar__user"><span data-icon="team"></span><span id="whoami"></span></span>
+    </header>
+
+    <!-- Requests -->
+    <section class="view" data-view="requests">
+      <div class="stats" id="stats"></div>
+      <div class="toolbar">
+        <div class="input-ico grow"><span data-icon="search"></span><input class="input" id="q" placeholder="ابحث برقم الطلب، الاسم، الجوال، الحي…"></div>
+        <select class="input" id="fService"><option value="">كل الخدمات</option></select>
+        <select class="input" id="fCity"><option value="">كل المدن</option></select>
+        <select class="input" id="fTeam"><option value="">كل الفرق</option><option value="none">غير موزّعة</option></select>
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>الطلب</th><th>العميل</th><th>الخدمات</th><th>المدينة</th><th>الموعد</th><th>الفريق</th><th>الحالة</th><th>التقييم</th><th class="t-act-h">إجراءات</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+        <div class="empty" id="rowsEmpty" hidden></div>
+      </div>
+    </section>
+
+    <!-- Customers -->
+    <section class="view" data-view="customers" hidden>
+      <div class="cstats" id="custStats"></div>
+      <div class="toolbar">
+        <div class="input-ico grow"><span data-icon="search"></span><input class="input" id="cq" placeholder="ابحث بالاسم أو رقم الجوال…"></div>
+        <select class="input" id="cFilter">
+          <option value="">كل العملاء</option>
+          <option value="returning">عملاء متكررون (أكثر من طلب)</option>
+          <option value="new">عملاء جدد (طلب واحد)</option>
+          <option value="open">لديهم طلبات جارية</option>
+          <option value="none">مسجّلون بدون طلبات</option>
+        </select>
+        <button class="btn btn--ghost" id="exportCust"><span data-icon="upload"></span>تصدير العملاء CSV</button>
+      </div>
+      <div class="table-wrap">
+        <table class="table table--cust">
+          <thead><tr><th>العميل</th><th>الجوال</th><th>الطلبات</th><th>جارية / منتهية</th><th>متوسط التقييم</th><th>أول طلب</th><th>آخر طلب</th><th></th></tr></thead>
+          <tbody id="custRows"></tbody>
+        </table>
+        <div class="empty" id="custEmpty" hidden></div>
+      </div>
+    </section>
+
+    <!-- Teams -->
+    <section class="view" data-view="teams" hidden>
+      <div class="view__head">
+        <p>أضف فرق التنفيذ وتخصصاتها، ثم وزّع الطلبات عليها من صفحة الطلب.</p>
+        <button class="btn btn--primary" id="addTeam"><span data-icon="plus"></span>فريق جديد</button>
+      </div>
+      <div class="teams" id="teams"></div>
+    </section>
+
+    <!-- Settings -->
+    <section class="view" data-view="settings" hidden>
+      <div class="cards2">
+        <form class="panel" id="credForm" novalidate>
+          <h3>بيانات الدخول</h3>
+          <label class="label" for="cCur">كلمة المرور الحالية</label>
+          <input class="input" id="cCur" type="password" autocomplete="current-password" dir="ltr">
+          <label class="label" for="cUser">اسم المستخدم الجديد</label>
+          <input class="input" id="cUser" autocomplete="username" dir="ltr">
+          <label class="label" for="cPass">كلمة المرور الجديدة (8 أحرف على الأقل)</label>
+          <input class="input" id="cPass" type="password" autocomplete="new-password" dir="ltr">
+          <label class="label" for="cPass2">تأكيد كلمة المرور</label>
+          <input class="input" id="cPass2" type="password" autocomplete="new-password" dir="ltr">
+          <p class="err" id="credErr"></p>
+          <button class="btn btn--primary" type="submit">حفظ</button>
+        </form>
+        <div class="panel">
+          <h3>البيانات</h3>
+          <p class="muted">تصدير الطلبات إلى ملف Excel (CSV)، أو إضافة بيانات تجريبية لتجربة اللوحة.</p>
+          <div class="stack">
+            <button class="btn btn--ghost" id="exportCsv"><span data-icon="upload"></span>تصدير الطلبات CSV</button>
+            <button class="btn btn--ghost" id="seedDemo"><span data-icon="sparkle"></span>إضافة طلبات وفرق تجريبية</button>
+            <button class="btn btn--ghost danger" id="clearAll"><span data-icon="trash"></span>حذف كل الطلبات والفرق</button>
+          </div>
+          <div class="note">
+            <b>ملاحظة مهمة</b>
+            حالياً تُحفظ الطلبات في هذا المتصفح فقط. لاستقبال طلبات العملاء من أجهزتهم يجب ربط الموقع بخادم (Backend) — الكود جاهز لذلك في <code>assets/js/api.js</code>.
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ============ REQUEST DRAWER ============ -->
+<div class="drawer" id="reqDrawer" hidden>
+  <div class="drawer__backdrop" data-close></div>
+  <aside class="drawer__panel drawer__panel--wide" role="dialog" aria-modal="true">
+    <header class="drawer__head">
+      <div><h3 id="dTitle" dir="ltr"></h3><small class="muted" id="dCreated"></small></div>
+      <button class="icon-btn" data-close aria-label="إغلاق"><span data-icon="close"></span></button>
+    </header>
+    <div class="drawer__body" id="dBody"></div>
+  </aside>
+</div>
+
+<!-- ============ TEAM MODAL ============ -->
+<div class="modal" id="teamModal" hidden>
+  <div class="drawer__backdrop" data-close-team></div>
+  <form class="modal__card" id="teamForm" novalidate>
+    <header class="drawer__head"><h3 id="teamModalTitle">فريق جديد</h3><button type="button" class="icon-btn" data-close-team><span data-icon="close"></span></button></header>
+    <div class="modal__body">
+      <input type="hidden" id="tId">
+      <label class="label" for="tName">اسم الفريق</label>
+      <input class="input" id="tName" placeholder="مثال: فريق الرخام">
+      <div class="row2">
+        <div><label class="label" for="tLead">مسؤول الفريق</label><input class="input" id="tLead"></div>
+        <div><label class="label" for="tPhone">جوال المسؤول</label><input class="input" id="tPhone" dir="ltr" placeholder="+9665XXXXXXXX"></div>
+      </div>
+      <span class="label">التخصصات</span>
+      <div class="chips" id="tSkills"></div>
+      <p class="err" id="teamErr"></p>
+    </div>
+    <footer class="modal__foot">
+      <button type="button" class="btn btn--ghost danger" id="tDelete" hidden><span data-icon="trash"></span>حذف</button>
+      <button type="submit" class="btn btn--primary">حفظ الفريق</button>
+    </footer>
+  </form>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/admin.js"></script>
+</body>
+</html>

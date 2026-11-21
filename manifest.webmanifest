@@ -1,0 +1,22 @@
+{
+  "name": "DONE | تمّ",
+  "short_name": "DONE",
+  "description": "اطلب رفع المقاسات والتصميم وتركيب الرخام والبورسلان والباركيه والموزاييك والألمنيوم.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FBF9F5",
+  "theme_color": "#A8803C",
+  "categories": ["lifestyle", "business", "productivity"],
+  "icons": [
+    { "src": "assets/img/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "assets/img/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "اطلب خدمة", "short_name": "اطلب", "url": "./index.html#request" },
+    { "name": "طلباتي", "short_name": "طلباتي", "url": "./index.html#top" }
+  ]
+}

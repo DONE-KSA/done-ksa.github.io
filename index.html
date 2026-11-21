@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>تمّ | DONE — قياس، تصميم، تركيب</title>
+  <meta name="description" content="تمّ DONE — منصة طلب خدمات رفع المقاسات والتصميم وتركيب الرخام والبورسلان والباركيه والموزاييك والألمنيوم.">
+  <meta name="theme-color" content="#A8803C">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/img/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/img/icon.svg">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="DONE">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<!-- ============ SIGN-UP GATE (first visit) ============ -->
+<div class="gate" id="gate" hidden>
+  <div class="gate__card" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
+    <button type="button" class="icon-btn gate__close" data-close-gate aria-label="Close"><span data-icon="close"></span></button>
+    <img src="assets/img/logo.svg" alt="DONE تمّ" class="gate__logo" width="230" height="60">
+    <div class="gate__steps" id="gateSteps"><span class="on">1</span><i></i><span>2</span><i></i><span>3</span><i></i><span>4</span><i></i><span>5</span></div>
+    <h2 id="gateTitle" data-i18n="gate.title">ابدأ طلبك</h2>
+    <p class="gate__sub" id="gateSub" data-i18n="gate.sub"></p>
+    <form id="gateForm" novalidate>
+      <label class="label" for="gName" data-i18n="f.name"></label>
+      <div class="input-ico"><span data-icon="team"></span><input class="input" id="gName" autocomplete="name" data-i18n-ph="f.namePh"></div>
+      <p class="err" id="gNameErr"></p>
+      <label class="label" for="gPhone" data-i18n="f.phone"></label>
+      <div class="phone" dir="ltr"><span>🇸🇦 +966</span><input class="input" id="gPhone" type="tel" inputmode="tel" autocomplete="tel-national" maxlength="10" placeholder="5XXXXXXXX"></div>
+      <p class="err" id="gPhoneErr"></p>
+      <button type="submit" class="btn btn--primary btn--lg gate__btn"><span id="gateBtn" data-i18n="gate.btn">متابعة</span><span data-icon="arrow" class="flip"></span></button>
+      <p class="gate__note"><span data-icon="shield"></span><span data-i18n="gate.note"></span></p>
+    </form>
+  </div>
+</div>
+
+<!-- ============ HEADER ============ -->
+<header class="header" id="top">
+  <div class="container header__inner">
+    <a href="#top" class="brand" aria-label="DONE تمّ">
+      <svg class="brand__mark" viewBox="0 0 512 512" aria-hidden="true">
+        <defs>
+          <linearGradient id="mBg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#DCC07F"/><stop offset=".55" stop-color="#BE9850"/><stop offset="1" stop-color="#9E7535"/></linearGradient>
+          <linearGradient id="mGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D8B873"/><stop offset="1" stop-color="#A8803C"/></linearGradient>
+        </defs>
+        <rect width="512" height="512" rx="116" fill="url(#mBg)"/>
+        <path d="M171 40v432M341 40v432M40 171h432M40 341h432" stroke="#fff" stroke-opacity=".14" stroke-width="4"/>
+        <path d="M150 268 L222 340" stroke="#FFFFFF" stroke-opacity=".78" stroke-width="64" stroke-linecap="round" fill="none"/>
+        <path d="M222 340 L372 172" stroke="#FFFFFF" stroke-width="64" stroke-linecap="round" fill="none"/>
+      </svg>
+      <span class="brand__words">
+        <svg class="brand__done" viewBox="0 0 372 100" aria-hidden="true">
+          <g fill="none" stroke="currentColor" stroke-width="17" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10 10 H38 A40 40 0 0 1 38 90 H10 Z"/>
+            <circle cx="140" cy="50" r="44" fill="url(#mGold)" stroke="none"/>
+            <path d="M120 51 L134 65 L161 36" stroke="#fff" stroke-width="12"/>
+            <path d="M208 90 V10 L270 90 V10"/>
+            <path d="M352 10 H302 V90 H352 M302 50 H342"/>
+          </g>
+        </svg>
+        <span class="brand__ar">تمّ</span>
+      </span>
+    </a>
+
+    <nav class="nav" id="nav">
+      <button class="nav__svc" data-open-panel="services" aria-expanded="false"><span data-i18n="nav.services">الخدمات</span><span class="nav__caret" data-icon="chev"></span></button>
+      <button class="nav__svc" data-open-panel="how" aria-expanded="false"><span data-i18n="nav.how">كيف نعمل</span><span class="nav__caret" data-icon="chev"></span></button>
+      <button class="nav__svc" data-open-panel="why" aria-expanded="false"><span data-i18n="nav.why">لماذا تمّ</span><span class="nav__caret" data-icon="chev"></span></button>
+      <button class="nav__svc" data-open-panel="faq" aria-expanded="false"><span data-i18n="nav.faq">الأسئلة</span><span class="nav__caret" data-icon="chev"></span></button>
+      <button class="nav__orders" data-open-orders><span data-icon="list"></span><span data-i18n="nav.orders">طلباتي</span><b class="badge-count" data-orders-count hidden>0</b></button>
+    </nav>
+
+    <div class="header__actions">
+      <button class="lang-btn" id="langBtn" aria-label="Change language"><span data-icon="globe"></span><span data-i18n="lang">EN</span></button>
+      <a href="#request" class="btn btn--primary btn--sm hide-sm" data-i18n="cta.request">اطلب خدمة</a>
+      <button class="icon-btn show-sm" id="menuBtn" aria-label="Menu"><span data-icon="menu"></span></button>
+    </div>
+  </div>
+
+  <!-- Services menu (opens from the top bar) -->
+  <div class="mega" id="mega" data-panel="services" hidden>
+    <div class="container mega__inner">
+      <div class="mega__head">
+        <b data-i18n="services.title"></b>
+        <small data-i18n="services.sub"></small>
+      </div>
+      <div class="mega__grid" id="megaGrid"></div>
+    </div>
+  </div>
+
+  <!-- How it works -->
+  <div class="mega" data-panel="how" hidden>
+    <div class="container mega__inner">
+      <div class="mega__head"><b data-i18n="how.title"></b></div>
+      <ol class="steps steps--panel">
+        <li><span class="steps__ico" data-icon="list"></span><b>01</b><h3 data-i18n="how.s1"></h3><p data-i18n="how.s1d"></p></li>
+        <li><span class="steps__ico" data-icon="ruler"></span><b>02</b><h3 data-i18n="how.s2"></h3><p data-i18n="how.s2d"></p></li>
+        <li><span class="steps__ico" data-icon="pen"></span><b>03</b><h3 data-i18n="how.s3"></h3><p data-i18n="how.s3d"></p></li>
+        <li><span class="steps__ico" data-icon="hammer"></span><b>04</b><h3 data-i18n="how.s4"></h3><p data-i18n="how.s4d"></p></li>
+        <li class="steps__done"><span class="steps__ico" data-icon="check"></span><b>05</b><h3 data-i18n="how.s5"></h3><p data-i18n="how.s5d"></p></li>
+      </ol>
+      <div class="mega__foot"><a href="#request" class="btn btn--primary btn--sm"><span data-i18n="cta.request"></span><span data-icon="arrow" class="flip"></span></a></div>
+    </div>
+  </div>
+
+  <!-- Why DONE -->
+  <div class="mega" data-panel="why" hidden>
+    <div class="container mega__inner">
+      <div class="mega__head"><b data-i18n="why.title"></b></div>
+      <div class="features features--panel">
+        <article class="feature"><span class="feature__ico" data-icon="eye"></span><div><h3 data-i18n="why.f1"></h3><p data-i18n="why.f1d"></p></div></article>
+        <article class="feature"><span class="feature__ico" data-icon="team"></span><div><h3 data-i18n="why.f2"></h3><p data-i18n="why.f2d"></p></div></article>
+        <article class="feature"><span class="feature__ico" data-icon="clock"></span><div><h3 data-i18n="why.f3"></h3><p data-i18n="why.f3d"></p></div></article>
+        <article class="feature"><span class="feature__ico" data-icon="shield"></span><div><h3 data-i18n="why.f4"></h3><p data-i18n="why.f4d"></p></div></article>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="mega" data-panel="faq" hidden>
+    <div class="container mega__inner">
+      <div class="mega__head"><b data-i18n="faq.title"></b></div>
+      <div class="faq faq--panel">
+        <details><summary><span data-i18n="faq.q1"></span><span data-icon="plus"></span></summary><p data-i18n="faq.a1"></p></details>
+        <details><summary><span data-i18n="faq.q2"></span><span data-icon="plus"></span></summary><p data-i18n="faq.a2"></p></details>
+        <details><summary><span data-i18n="faq.q3"></span><span data-icon="plus"></span></summary><p data-i18n="faq.a3"></p></details>
+        <details><summary><span data-i18n="faq.q4"></span><span data-icon="plus"></span></summary><p data-i18n="faq.a4"></p></details>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero__bg" aria-hidden="true"></div>
+  <div class="container hero__grid">
+    <div class="hero__text reveal">
+      <span class="pill"><span class="pill__dot"></span><span data-i18n="hero.badge">منصة خدمات التشطيب والتركيب</span></span>
+      <h1 class="hero__title">
+        <span data-i18n="hero.t1">من المقاس…</span><br>
+        <span data-i18n="hero.t2">إلى</span> <span class="hero__done" data-i18n="hero.t3">تمّ.</span>
+      </h1>
+      <p class="hero__sub" data-i18n="hero.sub"></p>
+      <div class="hero__ctas">
+        <a href="#request" class="btn btn--primary btn--lg"><span data-i18n="cta.request">اطلب خدمة</span><span data-icon="arrow" class="flip"></span></a>
+        <button type="button" class="btn btn--ghost btn--lg" data-open-panel="services" data-i18n="cta.explore">استكشف الخدمات</button>
+      </div>
+      <ul class="hero__points">
+        <li><span data-icon="check"></span><span data-i18n="hero.p1"></span></li>
+        <li><span data-icon="check"></span><span data-i18n="hero.p2"></span></li>
+        <li><span data-icon="check"></span><span data-i18n="hero.p3"></span></li>
+      </ul>
+    </div>
+
+    <div class="quick reveal">
+      <div class="quick__head">
+        <b data-i18n="quick.title">ماذا تريد أن تطلب اليوم؟</b>
+        <small data-i18n="quick.sub"></small>
+      </div>
+      <div class="quick__grid" id="quickGrid"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROMO STRIP ============ -->
+<section class="promo">
+  <div class="container promo__inner">
+    <span class="promo__ico" data-icon="design"></span>
+    <div class="promo__text">
+      <b data-i18n="design.title"></b>
+      <small data-i18n="promo.sub"></small>
+    </div>
+    <a href="#request" class="btn promo__btn" data-preselect="design"><span data-i18n="design.cta"></span><span data-icon="arrow" class="flip"></span></a>
+  </div>
+</section>
+
+<!-- ============ REQUEST ============ -->
+<div class="req-modal" id="request" hidden>
+  <div class="drawer__backdrop" data-close-req></div>
+  <div class="req-modal__card" role="dialog" aria-modal="true" aria-labelledby="reqTitle">
+    <button type="button" class="icon-btn req-modal__close" data-close-req aria-label="Close"><span data-icon="close"></span></button>
+    <header class="req-modal__head">
+      <span class="kicker" data-i18n="req.kicker"></span>
+      <h2 id="reqTitle" data-i18n="req.title"></h2>
+      <p data-i18n="req.sub"></p>
+    </header>
+
+    <div class="wizard" id="wizard">
+      <ol class="wizard__progress" id="wizProgress">
+        <li data-step="1"><i>1</i><span data-i18n="step.1"></span></li>
+        <li data-step="2"><i>2</i><span data-i18n="step.2"></span></li>
+        <li data-step="3"><i>3</i><span data-i18n="step.3"></span></li>
+        <li data-step="4"><i>4</i><span data-i18n="step.4"></span></li>
+        <li data-step="5"><i>5</i><span data-i18n="step.5"></span></li>
+      </ol>
+
+      <form id="reqForm" novalidate>
+        <!-- step 1 -->
+        <fieldset class="wstep" data-step="1">
+          <legend data-i18n="f.services"></legend>
+          <p class="hint" data-i18n="f.servicesHint"></p>
+          <div class="svc-pick" id="svcPick"></div>
+          <p class="err" data-err="services"></p>
+        </fieldset>
+
+        <!-- step 2 -->
+        <fieldset class="wstep" data-step="2" hidden>
+          <legend data-i18n="step.2"></legend>
+          <label class="label" data-i18n="f.property"></label>
+          <div class="chips" data-group="property">
+            <label><input type="radio" name="property" value="villa"><span data-i18n="p.villa"></span></label>
+            <label><input type="radio" name="property" value="apartment"><span data-i18n="p.apartment"></span></label>
+            <label><input type="radio" name="property" value="commercial"><span data-i18n="p.commercial"></span></label>
+            <label><input type="radio" name="property" value="other"><span data-i18n="p.other"></span></label>
+          </div>
+          <p class="err" data-err="property"></p>
+
+          <div class="row2">
+            <div class="field">
+              <label class="label" for="area" data-i18n="f.area"></label>
+              <input class="input" id="area" name="area" type="number" min="1" inputmode="numeric" data-i18n-ph="f.areaPh">
+              <label class="check-inline"><input type="checkbox" name="areaUnknown"><span data-i18n="f.areaUnknown"></span></label>
+            </div>
+            <div class="field">
+              <label class="label" for="material" data-i18n="f.material"></label>
+              <select class="input" id="material" name="material">
+                <option value="undecided" data-i18n="m.undecided"></option>
+                <option value="marble" data-i18n="m.marble"></option>
+                <option value="porcelain" data-i18n="m.porcelain"></option>
+                <option value="wood" data-i18n="m.wood"></option>
+                <option value="aluminium" data-i18n="m.aluminium"></option>
+              </select>
+            </div>
+          </div>
+
+          <label class="toggle-card">
+            <input type="checkbox" name="needDesign" checked>
+            <span class="toggle-card__switch"></span>
+            <span><b data-i18n="f.design"></b><small data-i18n="f.designHint"></small></span>
+          </label>
+
+          <div class="row2">
+          <div class="field">
+            <label class="label" for="notes" data-i18n="f.notes"></label>
+            <textarea class="input" id="notes" name="notes" rows="2" data-i18n-ph="f.notesPh"></textarea>
+          </div>
+
+          <div class="field">
+            <span class="label" data-i18n="f.photos"></span>
+            <label class="drop" id="drop">
+              <input type="file" id="photos" accept="image/*" multiple>
+              <span data-icon="upload"></span>
+              <span data-i18n="f.photosHint"></span>
+            </label>
+            <div class="thumbs" id="thumbs"></div>
+          </div>
+          </div>
+        </fieldset>
+
+        <!-- step 3 -->
+        <fieldset class="wstep" data-step="3" hidden>
+          <legend data-i18n="step.3"></legend>
+          <div class="row2">
+            <div class="field">
+              <label class="label" for="city" data-i18n="f.city"></label>
+              <select class="input" id="city" name="city"></select>
+              <p class="err" data-err="city"></p>
+            </div>
+            <div class="field">
+              <label class="label" for="district" data-i18n="f.district"></label>
+              <input class="input" id="district" name="district" data-i18n-ph="f.districtPh">
+            </div>
+          </div>
+          <div class="field">
+            <label class="label" for="address" data-i18n="f.address"></label>
+            <div class="input-ico"><span data-icon="pin"></span><input class="input" id="address" name="address" data-i18n-ph="f.addressPh"></div>
+          </div>
+          <div class="row2">
+            <div class="field">
+              <label class="label" for="date" data-i18n="f.date"></label>
+              <div class="input-ico"><span data-icon="calendar"></span><input class="input" id="date" name="date" type="date"></div>
+              <p class="err" data-err="date"></p>
+            </div>
+            <div class="field">
+              <span class="label" data-i18n="f.slot"></span>
+              <div class="chips chips--stack">
+                <label><input type="radio" name="slot" value="morning" checked><span data-i18n="s.morning"></span></label>
+                <label><input type="radio" name="slot" value="afternoon"><span data-i18n="s.afternoon"></span></label>
+                <label><input type="radio" name="slot" value="evening"><span data-i18n="s.evening"></span></label>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- step 4 -->
+        <fieldset class="wstep" data-step="4" hidden>
+          <legend data-i18n="step.4"></legend>
+          <div class="field">
+            <label class="label" for="name" data-i18n="f.name"></label>
+            <input class="input input--locked" id="name" name="name" autocomplete="name" readonly data-i18n-ph="f.namePh">
+            <p class="err" data-err="name"></p>
+          </div>
+          <div class="row2">
+            <div class="field">
+              <label class="label" for="phone" data-i18n="f.phone"></label>
+              <div class="phone" dir="ltr"><span>🇸🇦 +966</span><input class="input input--locked" id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" maxlength="10" readonly data-i18n-ph="f.phonePh"></div>
+              <p class="err" data-err="phone"></p>
+            </div>
+            <div class="field">
+              <label class="label" for="email" data-i18n="f.email"></label>
+              <input class="input" id="email" name="email" type="email" autocomplete="email" dir="ltr" placeholder="name@example.com">
+            </div>
+          </div>
+          <span class="label" data-i18n="f.contact"></span>
+          <div class="chips">
+            <label><input type="radio" name="contact" value="whatsapp" checked><span data-i18n="c.whatsapp"></span></label>
+            <label><input type="radio" name="contact" value="call"><span data-i18n="c.call"></span></label>
+          </div>
+          <label class="check-inline check-inline--block"><input type="checkbox" name="agree"><span data-i18n="f.agree"></span></label>
+          <p class="err" data-err="agree"></p>
+        </fieldset>
+
+        <!-- step 5 -->
+        <fieldset class="wstep" data-step="5" hidden>
+          <legend data-i18n="step.5"></legend>
+          <div class="review" id="review"></div>
+        </fieldset>
+
+        <div class="wizard__nav">
+          <button type="button" class="btn btn--ghost" id="prevBtn" hidden><span data-icon="arrow" class="flip-back"></span><span data-i18n="btn.back"></span></button>
+          <button type="button" class="btn btn--primary" id="nextBtn"><span data-i18n="btn.next"></span><span data-icon="arrow" class="flip"></span></button>
+          <button type="submit" class="btn btn--gold" id="submitBtn" hidden><span data-icon="check"></span><span data-i18n="btn.submit"></span></button>
+        </div>
+      </form>
+
+      <div class="success" id="success" hidden>
+        <div class="success__mark"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-16"/></svg></div>
+        <h3 data-i18n="ok.title"></h3>
+        <p class="success__label" data-i18n="ok.sub"></p>
+        <p class="success__id" id="successId" dir="ltr"></p>
+        <p data-i18n="ok.text"></p>
+        <a class="btn btn--wa btn--lg success__wa" id="waSend" target="_blank" rel="noopener" hidden>
+          <svg class="ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2l-.6-.3z"/></svg>
+          <span data-i18n="ok.wa"></span>
+        </a>
+        <p class="success__wahint" id="waHint" data-i18n="ok.waHint" hidden></p>
+        <div class="success__ctas">
+          <button class="btn btn--primary" data-open-orders data-i18n="ok.track"></button>
+          <button class="btn btn--ghost" id="newReq" data-i18n="ok.new"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="container footer__row">
+    <a href="#top" class="footer__brand"><img src="assets/img/logo.svg" alt="DONE تمّ" class="footer__logo"></a>
+    <nav class="footer__links">
+      <button class="link-btn" data-open-panel="services" data-i18n="nav.services"></button>
+      <button class="link-btn" data-open-panel="how" data-i18n="nav.how"></button>
+      <button class="link-btn" data-open-panel="why" data-i18n="nav.why"></button>
+      <button class="link-btn" data-open-panel="faq" data-i18n="nav.faq"></button>
+      <a href="#request" data-i18n="cta.request"></a>
+    </nav>
+    <span class="footer__copy">© <span id="year"></span> DONE · تمّ</span>
+  </div>
+</footer>
+
+<!-- ============ MOBILE TAB BAR (app-like) ============ -->
+<nav class="tabbar" aria-label="App navigation">
+  <a href="#top"><span data-icon="home"></span><small data-i18n="tab.home"></small></a>
+  <button data-open-panel="services"><span data-icon="grid"></span><small data-i18n="tab.services"></small></button>
+  <a href="#request" class="tabbar__main"><span data-icon="plus"></span><small data-i18n="tab.request"></small></a>
+  <button data-open-orders><span data-icon="list"></span><small data-i18n="tab.orders"></small></button>
+</nav>
+
+<!-- ============ ORDERS DRAWER ============ -->
+<div class="drawer" id="orders" hidden>
+  <div class="drawer__backdrop" data-close-orders></div>
+  <aside class="drawer__panel" role="dialog" aria-modal="true" aria-labelledby="ordersTitle">
+    <header class="drawer__head">
+      <h3 id="ordersTitle" data-i18n="orders.title"></h3>
+      <button class="icon-btn" data-close-orders aria-label="Close"><span data-icon="close"></span></button>
+    </header>
+    <div class="drawer__body" id="ordersList"></div>
+  </aside>
+</div>
+
+<!-- ============ RATING POPUP ============ -->
+<div class="req-modal rate-modal" id="rateModal" hidden>
+  <div class="drawer__backdrop" data-close-rate></div>
+  <div class="req-modal__card rate-card" role="dialog" aria-modal="true" aria-labelledby="rateTitle">
+    <button type="button" class="icon-btn req-modal__close" data-close-rate aria-label="Close"><span data-icon="close"></span></button>
+    <div id="rateForm">
+      <img src="assets/img/icon.svg" alt="" class="rate-card__mark" width="64" height="64">
+      <h3 id="rateTitle" data-i18n="rate.title"></h3>
+      <p class="rate-card__sub"><span data-i18n="rate.sub"></span> <b id="rateId" dir="ltr"></b></p>
+      <div class="stars" id="stars" role="radiogroup" aria-label="Rating"></div>
+      <p class="stars__label" id="starsLabel">&nbsp;</p>
+      <textarea class="input" id="rateNote" rows="3" maxlength="500" data-i18n-ph="rate.notePh"></textarea>
+      <button type="button" class="btn btn--gold btn--lg rate-card__send" id="rateSend" disabled><span data-i18n="rate.send"></span></button>
+      <button type="button" class="link-btn rate-card__later" data-close-rate data-i18n="rate.later"></button>
+    </div>
+    <div id="rateThanks" hidden>
+      <div class="success__mark"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-16"/></svg></div>
+      <h3 data-i18n="rate.thanks"></h3>
+      <p class="rate-card__sub" data-i18n="rate.thanksSub"></p>
+      <button type="button" class="btn btn--primary" data-close-rate data-i18n="rate.close"></button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
