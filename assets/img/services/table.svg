@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240">
+  <defs>
+    <linearGradient id="marble" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".5" stop-color="#EAE3D6"/><stop offset="1" stop-color="#F8F4EE"/></linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E2C285"/><stop offset="1" stop-color="#B88B45"/></linearGradient>
+    <radialGradient id="glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#F8DFA8" stop-opacity=".55"/><stop offset="1" stop-color="#F8DFA8" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="400" height="240" fill="#EFE8DC"/>
+  <rect y="186" width="400" height="54" fill="#D9CDB8"/>
+  <!-- wall panel -->
+  <rect x="40" y="20" width="320" height="140" rx="4" fill="#E7DFD1"/>
+  <path d="M120 20v140M200 20v140M280 20v140" stroke="#DED4C3" stroke-width="2"/>
+  <!-- pendant lights -->
+  <path d="M150 0v44M250 0v44" stroke="#A8803C" stroke-width="1.5"/>
+  <circle cx="150" cy="70" r="40" fill="url(#glow)"/><circle cx="250" cy="70" r="40" fill="url(#glow)"/>
+  <path d="M132 60a18 16 0 0 1 36 0z" fill="url(#gold)"/><path d="M232 60a18 16 0 0 1 36 0z" fill="url(#gold)"/>
+  <rect x="146" y="42" width="8" height="4" fill="#A8803C"/><rect x="246" y="42" width="8" height="4" fill="#A8803C"/>
+  <!-- chairs back -->
+  <g fill="#B07A4A">
+    <rect x="104" y="112" width="44" height="40" rx="10"/><rect x="252" y="112" width="44" height="40" rx="10"/>
+  </g>
+  <!-- tabletop perspective -->
+  <path d="M86 142H314L344 162H56Z" fill="url(#marble)"/>
+  <path d="M100 150q50 8 90 0M210 146q40 14 110 8M140 158q30-6 60 0" stroke="#BFB29D" stroke-width="1.2" fill="none"/>
+  <path d="M230 152q20 6 60 0" stroke="#C8A15A" stroke-width="1" fill="none" opacity=".7"/>
+  <rect x="56" y="162" width="288" height="8" fill="#DDD4C4"/>
+  <!-- pedestal legs -->
+  <path d="M120 170h18l-4 44h-10z" fill="#A8803C"/><path d="M262 170h18l-4 44h-10z" fill="#A8803C"/>
+  <rect x="108" y="212" width="42" height="6" rx="3" fill="#A8803C"/><rect x="250" y="212" width="42" height="6" rx="3" fill="#A8803C"/>
+  <!-- front chairs -->
+  <g fill="#9C6B3E">
+    <path d="M30 150h46v40H30z" rx="8"/><path d="M324 150h46v40h-46z"/>
+  </g>
+  <rect x="26" y="184" width="54" height="10" rx="4" fill="#B07A4A"/><rect x="320" y="184" width="54" height="10" rx="4" fill="#B07A4A"/>
+  <path d="M32 194v32M74 194v32M326 194v32M368 194v32" stroke="#A8803C" stroke-width="3"/>
+  <!-- vase & bowl -->
+  <path d="M192 142c-6-4-8-18 0-26h16c8 8 6 22 0 26z" fill="#A8803C"/>
+  <path d="M200 116c-4-16-16-22-22-30M200 116c2-14 10-24 20-28M200 116V84" stroke="#6E9A7A" stroke-width="2" fill="none"/>
+  <circle cx="178" cy="86" r="4" fill="#E2C285"/><circle cx="220" cy="88" r="4" fill="#E2C285"/><circle cx="200" cy="82" r="4" fill="#F4EFE6"/>
+  <path d="M240 142a16 8 0 0 0 32 0z" fill="url(#gold)"/>
+</svg>

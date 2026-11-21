@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240">
+  <defs>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E9E4DB"/><stop offset="1" stop-color="#F7F4EF"/></linearGradient>
+    <linearGradient id="shine" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".7"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E2C285"/><stop offset="1" stop-color="#B88B45"/></linearGradient>
+  </defs>
+  <!-- walls -->
+  <rect width="400" height="240" fill="#F3EEE6"/>
+  <path d="M0 0H112V118L0 240Z" fill="#E6DDCE"/>
+  <path d="M288 0H400V240L288 118Z" fill="#DDD3C2"/>
+  <!-- back wall large slabs -->
+  <g stroke="#E2D9CA" stroke-width="2"><path d="M168 0V118M232 0V118M112 60H288"/></g>
+  <path d="M130 10q20 30 10 50M250 70q-10 20 15 40" stroke="#D7CCBA" stroke-width="1.4" fill="none"/>
+  <!-- floor -->
+  <path d="M112 118H288L400 240H0Z" fill="url(#floor)"/>
+  <g stroke="#D3C9B8" stroke-width="1.6">
+    <path d="M141 118 50 240M170 118 117 240M200 118V240M230 118 283 240M259 118 350 240"/>
+    <path d="M100 131H300M82 151H318M55 180H345M18 220H382"/>
+  </g>
+  <path d="M150 118 120 240H190L196 118Z" fill="url(#shine)" opacity=".7"/>
+  <path d="M84 140q40 10 60 40M300 200q-30-20-40-60" stroke="#D9CFBF" stroke-width="1.2" fill="none" opacity=".8"/>
+  <!-- tile being placed (floating) -->
+  <g transform="translate(232 150)">
+    <path d="M0 22 62 0 104 20 42 44Z" fill="#FBF9F5" stroke="url(#gold)" stroke-width="2.5"/>
+    <path d="M0 22 42 44V52L0 30Z" fill="#DCD3C4"/>
+    <path d="M42 44 104 20V28L42 52Z" fill="#CFC5B4"/>
+    <path d="M24 22q20 6 40-6" stroke="#D7CCBA" stroke-width="1.2" fill="none"/>
+  </g>
+  <path d="M265 140v-14M283 136v-14M301 140v-14" stroke="#C8A15A" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 4"/>
+  <!-- tile spacers -->
+  <g fill="#C8A15A"><path d="M196 176h8v2h-8zM199 173h2v8h-2z"/><path d="M112 200h8v2h-8zM115 197h2v8h-2z"/></g>
+  <!-- level tool -->
+  <rect x="40" y="198" width="110" height="14" rx="4" fill="#A8803C" transform="rotate(-4 95 205)"/>
+  <rect x="86" y="200" width="20" height="8" rx="4" fill="#9FD8B8" transform="rotate(-4 95 205)"/>
+  <!-- plant -->
+  <path d="M352 150h26l-4 30h-18z" fill="#A8803C"/>
+  <path d="M365 150c-6-20-22-24-26-40 14 4 22 14 26 30 2-20 10-32 22-38-4 16-12 26-20 48z" fill="#4E7A5B"/>
+</svg>

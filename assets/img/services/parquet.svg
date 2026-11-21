@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240">
+  <defs>
+    <linearGradient id="light" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <linearGradient id="shade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5A3A1E" stop-opacity=".35"/><stop offset="1" stop-color="#5A3A1E" stop-opacity="0"/></linearGradient>
+  </defs>
+  <!-- walls -->
+  <rect width="400" height="240" fill="#F3EEE6"/>
+  <path d="M0 0H110V110L0 240Z" fill="#E6DDCE"/>
+  <path d="M290 0H400V240L290 110Z" fill="#DDD3C2"/>
+  <!-- window light on back wall -->
+  <rect x="150" y="16" width="100" height="76" rx="3" fill="#DCE9EF" stroke="#fff" stroke-width="5"/>
+  <path d="M200 16v76" stroke="#fff" stroke-width="4"/>
+  <!-- skirting -->
+  <rect x="110" y="102" width="180" height="8" fill="#FBF9F5"/>
+  <!-- floor strips -->
+  <path d="M110 110H128L40 240H0Z" fill="#C08A55"/>
+  <path d="M128 110H146L80 240H40Z" fill="#B57D49"/>
+  <path d="M146 110H164L120 240H80Z" fill="#CB9661"/>
+  <path d="M164 110H182L160 240H120Z" fill="#BA834F"/>
+  <path d="M182 110H200V240H160Z" fill="#C69059"/>
+  <path d="M200 110H218L240 240H200Z" fill="#B57D49"/>
+  <path d="M218 110H236L280 240H240Z" fill="#CB9661"/>
+  <path d="M236 110H254L320 240H280Z" fill="#C08A55"/>
+  <path d="M254 110H272L360 240H320Z" fill="#BA834F"/>
+  <path d="M272 110H290L400 240H360Z" fill="#C69059"/>
+  <g stroke="#8E5E33" stroke-width="1.2" opacity=".7">
+    <path d="M128 110 40 240M146 110 80 240M164 110 120 240M182 110 160 240M200 110V240M218 110 240 240M236 110 280 240M254 110 320 240M272 110 360 240"/>
+    <path d="M77 149H101.6M66.4 201H99.8M136.1 129.5H157.4M139.8 181.5H169.9M163.3 220.5H200M200 162H226.8M222.4 136H244.8M264.6 194.5H296.9M277.1 155.5H302.8M342.4 214H378"/>
+  </g>
+  <path d="M110 110H290L400 240H0Z" fill="url(#shade)"/>
+  <!-- window light patch on floor -->
+  <path d="M168 120H232L262 200H138Z" fill="url(#light)"/>
+  <!-- plank being laid + mallet -->
+  <g transform="rotate(-8 300 210)">
+    <rect x="236" y="196" width="120" height="18" rx="2" fill="#CB9661" stroke="#8E5E33"/>
+    <path d="M250 202q30 4 60 0M270 208q30-3 70 1" stroke="#9C6B3E" stroke-width="1" fill="none"/>
+  </g>
+  <g transform="rotate(30 60 196)">
+    <rect x="40" y="184" width="44" height="22" rx="6" fill="#A8803C"/>
+    <rect x="58" y="206" width="8" height="40" rx="3" fill="#E2C285"/>
+  </g>
+</svg>

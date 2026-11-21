@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240">
+  <defs>
+    <pattern id="mosaic" width="16" height="16" patternUnits="userSpaceOnUse">
+      <rect width="16" height="16" fill="#1F6E96"/>
+      <rect x="1" y="1" width="6.5" height="6.5" rx="1" fill="#3E8FB8"/>
+      <rect x="8.5" y="1" width="6.5" height="6.5" rx="1" fill="#5BA4C7"/>
+      <rect x="1" y="8.5" width="6.5" height="6.5" rx="1" fill="#7CC0DA"/>
+      <rect x="8.5" y="8.5" width="6.5" height="6.5" rx="1" fill="#2F7AA3"/>
+    </pattern>
+    <pattern id="band" width="12" height="12" patternUnits="userSpaceOnUse">
+      <rect width="12" height="12" fill="#A8803C"/>
+      <rect x="1" y="1" width="4.5" height="4.5" fill="#E2C285"/><rect x="6.5" y="6.5" width="4.5" height="4.5" fill="#E2C285"/>
+      <rect x="6.5" y="1" width="4.5" height="4.5" fill="#B8914A"/><rect x="1" y="6.5" width="4.5" height="4.5" fill="#B8914A"/>
+    </pattern>
+    <linearGradient id="water" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#A9E2F2" stop-opacity=".45"/><stop offset="1" stop-color="#0E5A80" stop-opacity=".35"/></linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E2C285"/><stop offset="1" stop-color="#B88B45"/></linearGradient>
+  </defs>
+  <rect width="400" height="240" fill="#EFE6D6"/>
+  <!-- deck stone grid -->
+  <g stroke="#E2D6C2" stroke-width="2"><path d="M0 40H400M0 210H400M80 0V240M160 0V40M240 0V40M320 0V240M160 210V240M240 210V240"/></g>
+  <!-- pool -->
+  <rect x="34" y="44" width="332" height="160" rx="22" fill="#F7F3EC"/>
+  <rect x="44" y="54" width="312" height="140" rx="16" fill="url(#mosaic)"/>
+  <rect x="44" y="54" width="312" height="14" fill="url(#band)"/>
+  <rect x="44" y="54" width="312" height="140" rx="16" fill="url(#water)"/>
+  <!-- light caustics -->
+  <g stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" opacity=".55">
+    <path d="M70 100q14-8 28 0t28 0M150 130q14-8 28 0t28 0M240 96q14-8 28 0t28 0M100 165q14-8 28 0t28 0M260 160q14-8 28 0t28 0"/>
+  </g>
+  <!-- steps corner -->
+  <path d="M296 194V160a16 16 0 0 1 16-16h44v50z" fill="#fff" opacity=".18"/>
+  <!-- ladder -->
+  <path d="M84 30v56M106 30v56" stroke="url(#gold)" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <path d="M84 30a11 11 0 0 1 22 0" stroke="url(#gold)" stroke-width="5" fill="none"/>
+  <path d="M84 62h22M84 78h22" stroke="url(#gold)" stroke-width="3"/>
+  <!-- decorative mosaic sample tiles -->
+  <g transform="translate(316 6)">
+    <rect width="30" height="30" rx="4" fill="url(#mosaic)" transform="rotate(10 15 15)"/>
+    <rect x="22" y="4" width="30" height="30" rx="4" fill="url(#band)" transform="rotate(-8 37 19)"/>
+  </g>
+  <!-- lounger -->
+  <rect x="14" y="214" width="96" height="14" rx="6" fill="#F4EFE6" stroke="#D6CCBB"/>
+  <rect x="96" y="204" width="22" height="24" rx="6" fill="#F4EFE6" stroke="#D6CCBB" transform="rotate(-24 107 216)"/>
+  <circle cx="352" cy="222" r="12" fill="#E2735A"/><path d="M340 222h24" stroke="#fff" stroke-width="3"/>
+</svg>
