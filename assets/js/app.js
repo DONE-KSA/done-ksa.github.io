@@ -411,14 +411,18 @@
     e.preventDefault();
     for (let s = 1; s < TOTAL; s++) if (!validate(s)) { showStep(s); return; }
     const sub = form.querySelector('[type="submit"]');
-    if (sub) sub.disabled = true;
+    const subHTML = sub ? sub.innerHTML : '';
+    if (sub) {
+      sub.disabled = true;
+      if (photos.length && DoneAPI.remote) sub.textContent = lang === 'ar' ? 'جاري رفع الصور…' : 'Uploading photos…';
+    }
     let req;
-    try { req = await DoneAPI.createRequest(collect()); }
+    try { req = await DoneAPI.createRequest(collect(), photos.map((p) => p.file)); }
     catch (err) {
       console.error(err);
       alert(lang === 'ar' ? 'تعذّر إرسال الطلب، تحقق من الإنترنت وحاول مرة أخرى.' : 'Could not send the request. Check your connection and try again.');
       return;
-    } finally { if (sub) sub.disabled = false; }
+    } finally { if (sub) { sub.disabled = false; sub.innerHTML = subHTML; } }
     DoneAPI.customerSignIn(req.data.phone); // the customer is now "signed in" on this device
     form.hidden = true;
     $('#wizProgress').hidden = true;
