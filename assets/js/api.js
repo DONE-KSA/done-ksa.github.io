@@ -200,6 +200,7 @@ const DoneAPI = (() => {
     },
     async clearAll() { localStorage.removeItem(K.req); localStorage.removeItem(K.teams); localStorage.removeItem(K.registry); },
     remote: false,
+    async photoUrls() { return []; },
     async canRate(id) { return (await this.listRequests()).some((r) => r.id === id && r.status === 4 && !r.rating); },
   };
 })();
@@ -246,6 +247,30 @@ const DoneAPI = (() => {
     return txt ? JSON.parse(txt) : null;
   }
   const rpc = (fn, args) => rest('rpc/' + fn, { method: 'POST', body: args });
+  async function storage(path, { method = 'GET', body, type } = {}) {
+    const h = { apikey: B.key };
+    const tk = await token();
+    if (tk) h.Authorization = 'Bearer ' + tk;
+    if (type) h['Content-Type'] = type;
+    const res = await fetch(`${base}/storage/v1/${path}`, { method, headers: h, body });
+    if (!res.ok) throw new Error(`DONE storage ${res.status}: ${await res.text()}`);
+    return res.json().catch(() => null);
+  }
+  // shrink a phone photo before upload: max 1600px, JPEG ~80% (a 5 MB photo becomes ~300 KB)
+  async function shrink(file) {
+    try {
+      const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
+      const s = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(bmp.width * s); c.height = Math.round(bmp.height * s);
+      c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+      const b = await new Promise((r) => c.toBlob(r, 'image/jpeg', 0.8));
+      if (b && b.size < 5e6) return b;
+    } catch {}
+    return file.size < 5e6 && /^image\/(jpeg|png|webp)$/.test(file.type) ? file : null;
+  }
+  const EXT = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
+  const urlCache = new Map();   // path -> { url, until }
   const q = encodeURIComponent;
 
   const toReq = (r) => ({
@@ -268,11 +293,30 @@ const DoneAPI = (() => {
       const [r] = await rest(`requests?select=*&id=eq.${q(id)}`);
       return r ? toReq(r) : null;
     },
-    async createRequest(data) {
+    async createRequest(data, files = []) {
       const now = Date.now();
-      const req = { id: newId('DN-'), createdAt: now, status: 0, teamId: null, schedule: null, notes: [], log: [{ at: now, text: 'created' }], data };
+      const id = newId('DN-');
+      // photos first (private bucket "photos/<id>/<n>.jpg"); a failed photo never blocks the request
+      const paths = (await Promise.all(files.slice(0, 10).map(async (f, i) => {
+        const blob = await shrink(f);
+        if (!blob) return null;
+        const path = `${id}/${i + 1}.${EXT[blob.type] || 'jpg'}`;
+        try { await storage(`object/photos/${path}`, { method: 'POST', body: blob, type: blob.type }); return path; }
+        catch (e) { console.warn(e); return null; }
+      }))).filter(Boolean);
+      const req = { id, createdAt: now, status: 0, teamId: null, schedule: null, notes: [], log: [{ at: now, text: 'created' }], data: { ...data, photos: paths } };
       await rest('requests', { method: 'POST', body: reqRow(req), prefer: 'return=minimal' });
       return req;
+    },
+    // admin: temporary (1 hour) links to view the private photos
+    async photoUrls(paths) {
+      const now = Date.now();
+      const need = paths.filter((p) => !(urlCache.get(p) && urlCache.get(p).until > now));
+      if (need.length) {
+        const res = await storage('object/sign/photos', { method: 'POST', body: JSON.stringify({ expiresIn: 3600, paths: need }), type: 'application/json' });
+        (res || []).forEach((x) => { if (x.signedURL) urlCache.set(x.path, { url: `${base}/storage/v1${x.signedURL}`, until: now + 3000e3 }); });
+      }
+      return paths.map((p) => (urlCache.get(p) || {}).url).filter(Boolean);
     },
     async updateRequest(id, patch, logText) {
       const cur = await this.getRequest(id);
@@ -288,7 +332,12 @@ const DoneAPI = (() => {
       const [r] = await rest(`requests?id=eq.${q(id)}`, { method: 'PATCH', body: { notes: [...(cur.notes || []), { at: Date.now(), text }] }, prefer: 'return=representation' });
       return r ? toReq(r) : null;
     },
-    async deleteRequest(id) { await rest(`requests?id=eq.${q(id)}`, { method: 'DELETE' }); },
+    async deleteRequest(id) {
+      const r = await this.getRequest(id);
+      const photos = ((r && r.data.photos) || []).filter((p) => String(p).includes('/'));
+      if (photos.length) await storage('object/photos', { method: 'DELETE', body: JSON.stringify({ prefixes: photos }), type: 'application/json' }).catch(() => {});
+      await rest(`requests?id=eq.${q(id)}`, { method: 'DELETE' });
+    },
     async rateRequest(id, stars, comment) {
       await rpc('rate_request', { p_id: id, p_stars: Math.round(stars), p_note: comment || '' });
     },
