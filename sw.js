@@ -1,5 +1,5 @@
 /* DONE | تمّ — service worker: makes the site installable and usable offline */
-const CACHE = 'done-v4';
+const CACHE = 'done-v5';
 const ASSETS = [
   './', './index.html', './manifest.webmanifest',
   './assets/css/style.css', './assets/js/data.js', './assets/js/api.js', './assets/js/app.js',
