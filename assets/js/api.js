@@ -199,5 +199,204 @@ const DoneAPI = (() => {
       write(K.req, [...demo.map(mk), ...read(K.req, [])]);
     },
     async clearAll() { localStorage.removeItem(K.req); localStorage.removeItem(K.teams); localStorage.removeItem(K.registry); },
+    remote: false,
+    async canRate(id) { return (await this.listRequests()).some((r) => r.id === id && r.status === 4 && !r.rating); },
   };
+})();
+
+/* ================= Supabase backend =================
+   When BACKEND.url + BACKEND.key are set (assets/js/data.js), requests, teams and customers
+   live in the Supabase database (tables + security rules: supabase/schema.sql):
+   - customers can only create a request, read their own (by mobile) and rate it;
+   - the admin signs in with Supabase Auth (email + password) and has full access. */
+(() => {
+  const B = typeof BACKEND !== 'undefined' && BACKEND.url && BACKEND.key ? BACKEND : null;
+  if (!B) return;
+  const L = { ...DoneAPI };            // local helpers we keep (normPhone, customer session…)
+  const AK = 'done.auth';
+  const base = B.url.replace(/\/+$/, '');
+  const getTok = () => { try { return JSON.parse(sessionStorage.getItem(AK)); } catch { return null; } };
+  const setTok = (t) => { if (t) sessionStorage.setItem(AK, JSON.stringify(t)); else sessionStorage.removeItem(AK); };
+  const newId = (p) => p + Date.now().toString().slice(-6) + Math.floor(Math.random() * 10);
+
+  async function auth(path, body, token) {
+    const h = { apikey: B.key, 'Content-Type': 'application/json' };
+    if (token) h.Authorization = 'Bearer ' + token;
+    const res = await fetch(`${base}/auth/v1/${path}`, { method: body ? (path === 'user' ? 'PUT' : 'POST') : 'GET', headers: h, body: body ? JSON.stringify(body) : undefined });
+    const j = await res.json().catch(() => ({}));
+    return res.ok ? j : null;
+  }
+  const keep = (j) => j && j.access_token ? { access_token: j.access_token, refresh_token: j.refresh_token, expires_at: j.expires_at || (Date.now() / 1000 + (j.expires_in || 3600)), email: (j.user || {}).email } : null;
+  async function token() {
+    const t = getTok();
+    if (!t) return null;
+    if (t.expires_at * 1000 > Date.now() + 60e3) return t.access_token;
+    const n = keep(await auth('token?grant_type=refresh_token', { refresh_token: t.refresh_token }));
+    setTok(n ? { ...n, email: n.email || t.email } : null);
+    return n ? n.access_token : null;
+  }
+  async function rest(path, { method = 'GET', body, prefer } = {}) {
+    const h = { apikey: B.key, 'Content-Type': 'application/json' };
+    const tk = await token();
+    if (tk) h.Authorization = 'Bearer ' + tk;
+    if (prefer) h.Prefer = prefer;
+    const res = await fetch(`${base}/rest/v1/${path}`, { method, headers: h, body: body !== undefined ? JSON.stringify(body) : undefined });
+    if (!res.ok) throw new Error(`DONE backend ${res.status}: ${await res.text()}`);
+    const txt = await res.text();
+    return txt ? JSON.parse(txt) : null;
+  }
+  const rpc = (fn, args) => rest('rpc/' + fn, { method: 'POST', body: args });
+  const q = encodeURIComponent;
+
+  const toReq = (r) => ({
+    id: r.id, createdAt: +r.created_at, status: r.status, teamId: r.team_id ?? null, schedule: r.schedule ?? null,
+    completedAt: r.completed_at ? +r.completed_at : undefined, updatedAt: r.updated_at ? +r.updated_at : undefined,
+    rating: r.rating || undefined, notes: r.notes || [], log: r.log || [], data: r.data || {},
+  });
+  const COLS = { status: 'status', teamId: 'team_id', schedule: 'schedule', completedAt: 'completed_at', updatedAt: 'updated_at', rating: 'rating', notes: 'notes', log: 'log', data: 'data' };
+  const toRow = (patch) => { const o = {}; for (const k in patch) if (COLS[k]) o[COLS[k]] = patch[k] === undefined ? null : patch[k]; return o; };
+  const reqRow = (r) => ({ id: r.id, phone: L.normPhone(r.data.phone), created_at: r.createdAt, status: r.status, team_id: r.teamId, schedule: r.schedule, completed_at: r.completedAt || null, rating: r.rating || null, notes: r.notes || [], log: r.log || [], data: r.data });
+
+  Object.assign(DoneAPI, {
+    remote: true,
+
+    async listRequests() {
+      if (!getTok()) return [];   // only the admin can list all requests
+      return (await rest('requests?select=*&order=created_at.desc')).map(toReq);
+    },
+    async getRequest(id) {
+      const [r] = await rest(`requests?select=*&id=eq.${q(id)}`);
+      return r ? toReq(r) : null;
+    },
+    async createRequest(data) {
+      const now = Date.now();
+      const req = { id: newId('DN-'), createdAt: now, status: 0, teamId: null, schedule: null, notes: [], log: [{ at: now, text: 'created' }], data };
+      await rest('requests', { method: 'POST', body: reqRow(req), prefer: 'return=minimal' });
+      return req;
+    },
+    async updateRequest(id, patch, logText) {
+      const cur = await this.getRequest(id);
+      if (!cur) return null;
+      const p = { ...patch, updatedAt: Date.now() };
+      if (logText) p.log = [...(cur.log || []), { at: Date.now(), text: logText }];
+      const [r] = await rest(`requests?id=eq.${q(id)}`, { method: 'PATCH', body: toRow(p), prefer: 'return=representation' });
+      return r ? toReq(r) : null;
+    },
+    async addNote(id, text) {
+      const cur = await this.getRequest(id);
+      if (!cur) return null;
+      const [r] = await rest(`requests?id=eq.${q(id)}`, { method: 'PATCH', body: { notes: [...(cur.notes || []), { at: Date.now(), text }] }, prefer: 'return=representation' });
+      return r ? toReq(r) : null;
+    },
+    async deleteRequest(id) { await rest(`requests?id=eq.${q(id)}`, { method: 'DELETE' }); },
+    async rateRequest(id, stars, comment) {
+      await rpc('rate_request', { p_id: id, p_stars: Math.round(stars), p_note: comment || '' });
+    },
+    async canRate(id) { try { return !!(await rpc('can_rate', { p_id: id })); } catch { return false; } },
+
+    /* customers */
+    async customerRegister(name, phone) {
+      const c = await L.customerRegister(name, phone);
+      rpc('register_customer', { p_phone: c.phone, p_name: c.name }).catch(() => {});
+      return c;
+    },
+    async listCustomerRequests(phone) {
+      const p = L.normPhone(phone);
+      if (!/^5\d{8}$/.test(p)) return [];
+      try { return (await rpc('my_requests', { p_phone: p })).map(toReq); } catch { return []; }
+    },
+    async customerLogin(phone, reqId) {
+      const id = L.normId(reqId);
+      const ok = (await this.listCustomerRequests(phone)).some((r) => r.id === id);
+      if (ok) L.customerSignIn(phone);
+      return ok;
+    },
+    async listCustomers() {
+      const [reqs, reg] = await Promise.all([this.listRequests(), rest('customers?select=*')]);
+      return summarize(reqs, reg.map((c) => ({ phone: c.phone, name: c.name, at: c.at ? +c.at : null })));
+    },
+
+    /* teams */
+    async listTeams() { return rest('teams?select=*&order=name'); },
+    async saveTeam(team) {
+      const row = { name: team.name, lead: team.lead || '', phone: team.phone || '', skills: team.skills || [] };
+      if (team.id) { await rest(`teams?id=eq.${q(team.id)}`, { method: 'PATCH', body: row }); return team; }
+      const t = { id: newId('T-'), ...row };
+      await rest('teams', { method: 'POST', body: t, prefer: 'return=minimal' });
+      return t;
+    },
+    async deleteTeam(id) {
+      await rest(`requests?team_id=eq.${q(id)}`, { method: 'PATCH', body: { team_id: null } });
+      await rest(`teams?id=eq.${q(id)}`, { method: 'DELETE' });
+    },
+
+    /* admin auth (Supabase Auth: email + password) */
+    async login(email, pass) {
+      const t = keep(await auth('token?grant_type=password', { email: String(email).trim(), password: pass }));
+      if (!t) return false;
+      setTok(t);
+      try {                       // signed in, but is this user an admin of the panel?
+        const me = await rest('admins?select=user_id');
+        if (!me.length) { setTok(null); return false; }
+      } catch { setTok(null); return false; }
+      return true;
+    },
+    logout() { const t = getTok(); if (t) auth('logout', {}, t.access_token).catch(() => {}); setTok(null); },
+    session() { const t = getTok(); return t ? { user: t.email || 'admin', at: Date.now() } : null; },
+    async changeCredentials(currentPass, _newUser, newPass) {
+      const t = getTok(); if (!t) return false;
+      const chk = keep(await auth('token?grant_type=password', { email: t.email, password: currentPass }));
+      if (!chk) return false;
+      setTok(chk);
+      return !!(await auth('user', { password: newPass }, chk.access_token));
+    },
+
+    /* demo / reset */
+    async seedDemo() {
+      const backup = { req: localStorage.getItem('done.requests.v1'), teams: localStorage.getItem('done.teams.v1') };
+      localStorage.removeItem('done.requests.v1'); localStorage.removeItem('done.teams.v1');
+      try {
+        await L.seedDemo.call(L);
+        const teams = JSON.parse(localStorage.getItem('done.teams.v1') || '[]');
+        const reqs = JSON.parse(localStorage.getItem('done.requests.v1') || '[]');
+        if (teams.length) await rest('teams', { method: 'POST', body: teams.map((t) => ({ id: t.id, name: t.name, lead: t.lead, phone: t.phone, skills: t.skills })), prefer: 'return=minimal,resolution=merge-duplicates' });
+        if (reqs.length) await rest('requests', { method: 'POST', body: reqs.map(reqRow), prefer: 'return=minimal,resolution=merge-duplicates' });
+      } finally {
+        ['req', 'teams'].forEach((k) => { const key = k === 'req' ? 'done.requests.v1' : 'done.teams.v1'; if (backup[k] == null) localStorage.removeItem(key); else localStorage.setItem(key, backup[k]); });
+      }
+    },
+    async clearAll() {
+      await rest('requests?id=not.is.null', { method: 'DELETE' });
+      await rest('teams?id=not.is.null', { method: 'DELETE' });
+      await rest('customers?phone=not.is.null', { method: 'DELETE' });
+    },
+  });
+
+  // same summary the local version computes
+  function summarize(requests, reg) {
+    const map = new Map();
+    for (const r of requests) {
+      const p = L.normPhone(r.data.phone);
+      if (!map.has(p)) map.set(p, { phone: '+966' + p, name: r.data.name, requests: [], cities: new Set() });
+      const c = map.get(p);
+      c.requests.push(r);
+      if (r.data.city !== '' && r.data.city != null) c.cities.add(r.data.city);
+    }
+    for (const s of reg) {
+      if (!map.has(s.phone)) map.set(s.phone, { phone: '+966' + s.phone, name: s.name, requests: [], cities: new Set(), at: s.at });
+      else map.get(s.phone).at = s.at;
+    }
+    return [...map.values()].map((c) => {
+      const rated = c.requests.filter((r) => r.rating);
+      const times = c.requests.map((r) => r.createdAt);
+      if (!times.length) times.push(c.at || Date.now());
+      return {
+        registeredAt: c.at || null, phone: c.phone, name: c.name,
+        email: (c.requests.find((r) => r.data.email) || { data: {} }).data.email || '',
+        count: c.requests.length, open: c.requests.filter((r) => r.status < 4).length, done: c.requests.filter((r) => r.status === 4).length,
+        avg: rated.length ? rated.reduce((a, r) => a + r.rating.stars, 0) / rated.length : null,
+        first: Math.min(...times), last: Math.max(...times), cities: [...c.cities], ids: c.requests.map((r) => r.id),
+      };
+    }).sort((a, b) => b.last - a.last);
+  }
 })();
