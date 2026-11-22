@@ -218,3 +218,10 @@ html[dir="rtl"] #logout .ico { transform: scaleX(-1); }
 .wa-templates > div { display: flex; flex-wrap: wrap; gap: .35rem; }
 .wa-templates .act + .act { margin-inline-start: 0; }
 .wa-pref { background: #DFF3EA; color: #157A51; border-radius: 999px; padding: .05rem .55rem; font-size: .74rem; }
+/* ---------- Site photos in request details ---------- */
+.dphotos { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: .5rem; margin-top: .45rem; }
+.dphotos a, .dphotos__ph { display: block; aspect-ratio: 1; border-radius: 10px; overflow: hidden; background: #f3ece0; border: 1px solid rgba(168,128,60,.25); }
+.dphotos__ph { animation: dph 1.2s ease-in-out infinite alternate; }
+@keyframes dph { to { opacity: .45; } }
+.dphotos img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .2s; }
+.dphotos a:hover img { transform: scale(1.05); }
