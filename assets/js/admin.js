@@ -33,8 +33,22 @@
   async function showApp() {
     $('#login').hidden = true; $('#app').hidden = false;
     $('#whoami').textContent = DoneAPI.session().user;
-    await load();
+    try { await load(); }
+    catch (err) { console.error(err); DoneAPI.logout(); showLogin(); $('#loginErr').textContent = 'انتهت الجلسة أو تعذّر الاتصال، سجّل الدخول مرة أخرى'; return; }
     setView('requests');
+  }
+  if (DoneAPI.remote) {
+    // database mode: sign in with the admin e-mail; the e-mail itself can't be changed from here
+    $('label[for="lUser"]').textContent = 'البريد الإلكتروني';
+    $('#lUser').type = 'email';
+    $('label[for="cUser"]').textContent = 'البريد الإلكتروني';
+    $('#cUser').readOnly = true;
+    const n = $('#credForm').nextElementSibling && $('#credForm').nextElementSibling.querySelector('.note');
+    if (n) n.innerHTML = '<b>متصل بقاعدة البيانات ✓</b>تصل طلبات العملاء من كل الأجهزة إلى هذه اللوحة مباشرة، وتتحدث تلقائياً كل 30 ثانية.';
+    // pick up new customer requests automatically (not while a drawer/modal is open)
+    setInterval(() => {
+      if (DoneAPI.session() && !$('#app').hidden && $('#reqDrawer').hidden && $('#teamModal').hidden && document.visibilityState === 'visible') load().catch(() => {});
+    }, 30000);
   }
 
   $('#loginForm').addEventListener('submit', async (e) => {
@@ -42,7 +56,7 @@
     const ok = await DoneAPI.login($('#lUser').value, $('#lPass').value);
     if (ok) { $('#lPass').value = ''; $('#loginErr').textContent = ''; showApp(); }
     else {
-      $('#loginErr').textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة';
+      $('#loginErr').textContent = DoneAPI.remote ? 'البريد أو كلمة المرور غير صحيحة' : 'اسم المستخدم أو كلمة المرور غير صحيحة';
       const c = $('.login__card'); c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake');
     }
   });
