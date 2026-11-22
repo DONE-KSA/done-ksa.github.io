@@ -288,9 +288,8 @@
 
   async function promptRating() {
     const m = location.hash.match(/^#rate=([\w-]+)/);
-    const all = await DoneAPI.listRequests();
     // a rating link sent to the customer on WhatsApp carries the request number
-    if (m && all.some((r) => r.id === m[1] && r.status === 4 && !r.rating)) return openRate(m[1]);
+    if (m && await DoneAPI.canRate(m[1])) return openRate(m[1]);
     const sess = DoneAPI.customerSession();
     if (!sess) return;
     const list = await DoneAPI.listCustomerRequests(sess.phone);
@@ -411,7 +410,15 @@
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     for (let s = 1; s < TOTAL; s++) if (!validate(s)) { showStep(s); return; }
-    const req = await DoneAPI.createRequest(collect());
+    const sub = form.querySelector('[type="submit"]');
+    if (sub) sub.disabled = true;
+    let req;
+    try { req = await DoneAPI.createRequest(collect()); }
+    catch (err) {
+      console.error(err);
+      alert(lang === 'ar' ? 'تعذّر إرسال الطلب، تحقق من الإنترنت وحاول مرة أخرى.' : 'Could not send the request. Check your connection and try again.');
+      return;
+    } finally { if (sub) sub.disabled = false; }
     DoneAPI.customerSignIn(req.data.phone); // the customer is now "signed in" on this device
     form.hidden = true;
     $('#wizProgress').hidden = true;
