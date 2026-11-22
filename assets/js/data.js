@@ -104,6 +104,11 @@ const STATUSES = [
    While empty, the "Send on WhatsApp" button after a request stays hidden. */
 const COMPANY = { whatsapp: '' };
 
+/* Database (Supabase). Project URL + publishable/anon key from: Project Settings → API.
+   The anon key is meant to be public — security comes from the rules in supabase/schema.sql.
+   While empty, everything is stored in the browser only. */
+const BACKEND = { url: 'https://khiklyyrdgcvplckzfoo.supabase.co', key: 'sb_publishable_iKq5VH0oF-8lrD0eSrpmyA_zo6D8N21' };
+
 const CITIES = {
   ar: ['جدة', 'مكة المكرمة'],
   en: ['Jeddah', 'Makkah'],
