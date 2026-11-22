@@ -224,9 +224,22 @@
     ].filter(Boolean).join('\n');
   }
 
+  async function loadPhotos(r) {
+    const paths = (r.data.photos || []).filter((p) => String(p).includes('/'));
+    if (!paths.length) return;
+    let urls = [];
+    try { urls = await DoneAPI.photoUrls(paths); } catch (e) { console.warn(e); }
+    const box = $('#dPhotos');
+    if (!box || openId !== r.id) return;
+    box.innerHTML = urls.length
+      ? urls.map((u, i) => `<a href="${esc(u)}" target="_blank" rel="noopener" title="فتح الصورة ${i + 1} بالحجم الكامل"><img src="${esc(u)}" alt="صورة ${i + 1}" loading="lazy"></a>`).join('')
+      : '<b class="muted">تعذّر تحميل الصور</b>';
+  }
+
   function renderDetail() {
     const r = reqs.find((x) => x.id === openId);
     if (!r) { closeRequest(); return; }
+    setTimeout(() => loadPhotos(r));
     const d = r.data;
     const team = teams.find((t) => t.id === r.teamId);
     const sorted = [...teams].map((t) => ({ t, score: (t.skills || []).filter((s) => d.services.includes(s)).length }))
@@ -319,7 +332,10 @@
           <div><small>الخامة</small><b>${MATERIAL[d.material] || '—'}</b></div>
           <div><small>تصميم قبل التنفيذ</small><b>${d.needDesign ? 'نعم' : 'لا'}</b></div>
           ${d.notes ? `<div class="full"><small>وصف العميل</small><b>${esc(d.notes)}</b></div>` : ''}
-          ${d.photos && d.photos.length ? `<div class="full"><small>صور مرفقة</small><b>${d.photos.length} صورة (تُستلم عند ربط الخادم)</b></div>` : ''}
+          ${d.photos && d.photos.length ? `<div class="full"><small>صور الموقع المرفقة (${d.photos.length})</small>${
+            d.photos.some((p) => String(p).includes('/'))
+              ? `<div class="dphotos" id="dPhotos">${d.photos.map(() => '<span class="dphotos__ph"></span>').join('')}</div>`
+              : `<b>${d.photos.length} صورة (أُرسلت قبل تفعيل رفع الصور)</b>`}</div>` : ''}
         </div>
       </section>
 
